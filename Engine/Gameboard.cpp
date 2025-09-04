@@ -5,14 +5,17 @@
 #include <deque>
 #include <utility>
 #include <iostream>
-#include <iomanip>
 
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 namespace Engine {
 
 int Gameboard::Init() {
+  kHeight = 4;
+  kWidth = 4;
+  score = 0;
   board.resize(kHeight);
   for (int i = 0; i < kHeight; ++i) {
     board[i].resize(kWidth);
@@ -26,12 +29,24 @@ int Gameboard::Init() {
   key_to_dir.insert({'s', kDown});
   key_to_dir.insert({'a', kLeft});
   key_to_dir.insert({'d', kRight});
+  number_to_color.insert({2, "#EEE4DA"});
+  number_to_color.insert({4, "#ECE0C8"});
+  number_to_color.insert({8, "#F2B179"});
+  number_to_color.insert({16, "#F59565"});
+  number_to_color.insert({32, "#F77B5F"});
+  number_to_color.insert({64, "#F35F3B"});
+  number_to_color.insert({128, "#EDCE71"});
+  number_to_color.insert({256, "#EDCC61"});
+  number_to_color.insert({512, "#ECC850"});
+  number_to_color.insert({1024, "#EDC53F"});
+  number_to_color.insert({2048, "#E9B501"});
+  number_to_color.insert({4096, "#FCEDD8"});
   Add();
   Add();
   return 0;
 }
 
-int inRange(int x, int min, int max) {
+static int inRange(int x, int min, int max) {
   return (x >= min && x < max);
 }
 
@@ -63,6 +78,7 @@ int Gameboard::Move(int dir) {
           if (!column.empty() && board[j][i] == column.back()) {
             column.pop_back();
             column.push_back(board[j][i] * -2);
+            score += board[j][i] * 2;
           } else {
             column.push_back(board[j][i]);
           }
@@ -88,6 +104,7 @@ int Gameboard::Move(int dir) {
           if (!column.empty() && board[j][i] == column.back()) {
             column.pop_back();
             column.push_back(board[j][i] * -2);
+            score += board[j][i] * 2;
           } else {
             column.push_back(board[j][i]);
           }
@@ -113,6 +130,7 @@ int Gameboard::Move(int dir) {
           if (!column.empty() && board[i][j] == column.back()) {
             column.pop_back();
             column.push_back(board[i][j] * -2);
+            score += board[i][j] * 2;
           } else {
             column.push_back(board[i][j]);
           }
@@ -138,6 +156,7 @@ int Gameboard::Move(int dir) {
           if (!column.empty() && board[i][j] == column.back()) {
             column.pop_back();
             column.push_back(board[i][j] * -2);
+            score += board[i][j] * 2;
           } else {
             column.push_back(board[i][j]);
           }
@@ -168,7 +187,7 @@ int Gameboard::Add() {
   }
   int n = rand() % free_space.size();
   std::pair<int, int> target = free_space[n];
-  board[target.first][target.second] = 2;
+  board[target.first][target.second] = 2 * ((1 + (rand() % 10 + 1) / 10));
   return 0;
 }
 
@@ -183,32 +202,62 @@ int Gameboard::Update(int keycode) {
     }
   }
   for (int i = 0; i < 4; ++i) {
-    if (!CanMove(i)) {
-      return 1;
+    if (CanMove(i)) {
+      return 0;
     }
   }
-  return 0;
+  return 1;
+}
+
+static void print_html_color_text(std::string output_string, std::string html_color) {
+  std::string hexcolor = html_color.substr(1);
+
+  std::string hexR = hexcolor.substr(0, 2);
+  std::string hexG = hexcolor.substr(2, 2);
+  std::string hexB = hexcolor.substr(4, 2);
+
+  int R = std::stoi(hexR, nullptr, 16);
+  int G = std::stoi(hexG, nullptr, 16);
+  int B = std::stoi(hexB, nullptr, 16);
+
+  printf("\x1b[38;2;%d;%d;%dm%s\x1b[0m", R, G, B, output_string.c_str());
+}
+
+void Gameboard::DrawColorText(int n) {
+  auto target = number_to_color.find(n);
+  int length = std::to_string(n).length();
+  for (int i = 4; i > length; --i) {
+    std::cout << ' ';
+  }
+  if (n == 0) {
+    std::cout << '.';
+  } else if (target == number_to_color.end()) {
+    print_html_color_text(std::to_string(n), "#FBEFE3");
+  } else {
+    auto color = target->second;
+    print_html_color_text(std::to_string(n), color);
+  }
 }
 
 int Gameboard::Draw() {
-  for (int i = 0; i < 1 + 5 * kWidth; ++i) {
+  for (int i = 0; i < 2 + 5 * kWidth; ++i) {
     std::cout << '#';
   }
   std::cout << std::endl;
   for (int x = 0; x < kHeight; ++x) {
     std::cout << '#';
     for (int y = 0; y < kWidth; ++y) {
-      std::cout 
-        << std::setw(4) 
-        << ((board[x][y] == 0 ) ? "." : std::to_string(board[x][y])) 
-        << ((y == kWidth - 1) ? "#\n" : " ");
+      DrawColorText(board[x][y]);
+      std::cout << ' ';
     }
+    std::cout << "#\n";
   }
-  for (int i = 0; i < 1 + 5 * kWidth; ++i) {
+  for (int i = 0; i < 2 + 5 * kWidth; ++i) {
     std::cout << '#';
   }
   std::cout << std::endl;
-  return kHeight + 2;
+  std::cout << "score: " << score << std::endl;
+  return kHeight + 3;
 }
 
 int Gameboard::Terminate() {

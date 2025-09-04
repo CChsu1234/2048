@@ -3,15 +3,18 @@
 
 #include <vector>
 #include <map>
+#include <string>
 
 namespace Engine {
 
 class Gameboard {
  private:
+  int score = 0;
   int kWidth = 4;
   int kHeight = 4;
   std::vector<std::vector<int>> board;
   std::map<char, int> key_to_dir;
+  std::map<int, std::string> number_to_color;
 
   enum {
     kUp,
@@ -26,6 +29,7 @@ class Gameboard {
   int Add();
   int Move(int dir);
   int CanMove(int dir);
+  void DrawColorText(int n);
   
  public:
   Gameboard() = default;

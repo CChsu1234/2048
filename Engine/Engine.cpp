@@ -20,23 +20,31 @@ int Engine::Start() {
       break;
     }
   }
+  if (status == 1) {
+    std::cout << "YOU LOSE" << std::endl;
+  } else if (status == 2) {
+    std::cout << "QUIT" << std::endl;
+  }
   return 0;
 }
 
 int Engine::Update() {
   std::string input;
-  std::cin >> input;
+  std::getline(std::cin, input);
+  int result;
   n_line += 1;
   if (input[0] == 'q') {
-    return 1;
+    return 2;
   }
-  gameboard.Update(input[0]);
+  result = gameboard.Update(input[0]);
+  if (result != 0) {
+    return result;
+  }
   return 0;
 }
 
 int Engine::Draw() {
   n_line += 1;
-  n_line = 0;
   while (n_line--) {
     std::cout << "\033[A";
     std::cout << "\033[2K";
