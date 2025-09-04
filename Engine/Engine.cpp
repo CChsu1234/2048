@@ -44,13 +44,13 @@ int Engine::Update() {
 }
 
 int Engine::Draw() {
-  n_line += 1;
   while (n_line--) {
     std::cout << "\033[A";
     std::cout << "\033[2K";
   }
   std::cout.flush();
   n_line += gameboard.Draw();
+  n_line += 1;
   return 0;
 }
 
