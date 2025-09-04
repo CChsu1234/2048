@@ -22,3 +22,7 @@ add this in your bashrc or zshrc file
 ```bash
 source /path/to/2048
 ```
+
+## Play
+
+type wasd and press enter to move

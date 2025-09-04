@@ -50,6 +50,8 @@ int Engine::Draw() {
   }
   std::cout.flush();
   n_line += gameboard.Draw();
+  std::cout << "(w) up (a) left (s) down (d) right (q) quit" << std::endl;
+  n_line += 1;
   n_line += 1;
   return 0;
 }
