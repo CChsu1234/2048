@@ -2,14 +2,16 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <set>
 
 namespace Engine {
 
 int Scoreboard::Read() {
   scoreboard.clear();
+  scoreboard_file = GAME_ROOT + std::string("/Resource/Scoreboard.txt");
   std::ifstream in_file;
-  in_file.open("./Resource/Scoreboard.txt");
+  in_file.open(scoreboard_file.c_str());
   in_file >> total;
   if (in_file.fail()) {
     total = 0;
@@ -56,8 +58,11 @@ int Scoreboard::AddNewScore(int score) {
 }
 
 int Scoreboard::Save() {
+  if (total == -1) {
+    return 0;
+  }
   std::ofstream out_file;
-  out_file.open("./Resource/Scoreboard.txt");
+  out_file.open(scoreboard_file.c_str());
   out_file << total << '\n';
   for (auto score = scoreboard.begin(); score != scoreboard.end(); ++score) {
     out_file << *score << '\n';
