@@ -4,6 +4,8 @@ project(2048 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_compile_definitions(GAME_ROOT="${CMAKE_SOURCE_DIR}")
+
 add_executable(2048
   main.cpp
 

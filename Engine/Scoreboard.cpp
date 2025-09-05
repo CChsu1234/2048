@@ -24,6 +24,17 @@ int Scoreboard::Read() {
   return 0;
 }
 
+int Scoreboard::DrawTitleLine(int current_score) {
+  int prev_best_score = *(scoreboard.rbegin());
+  std::cout 
+    << "Best: "
+    << ((current_score > prev_best_score) ? current_score : prev_best_score)
+    << ", Current: "
+    << current_score
+    << std::endl;
+  return 1;
+}
+
 int Scoreboard::Draw() {
   std::cout << "SCORE BOARD" << std::endl;
   int rank = 0;
@@ -37,8 +48,10 @@ int Scoreboard::Draw() {
 }
 
 int Scoreboard::AddNewScore(int score) {
-  scoreboard.insert(score);
-  ++total;
+  if (score) {
+    scoreboard.insert(score);
+    ++total;
+  }
   return 0;
 }
 

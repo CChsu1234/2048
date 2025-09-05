@@ -1,6 +1,10 @@
 #include "Engine.hpp"
 
 #include <iostream>
+#include <sys/stat.h>
+
+#include "Gameboard.hpp"
+#include "Scoreboard.hpp"
 
 namespace Engine {
 
@@ -8,6 +12,20 @@ int Engine::Init() {
   gameboard.Init();
   scoreboard.Read();
   n_line = 0;
+
+#ifndef GAME_ROOT
+  std::cerr << "GAME_ROOT not define" << std::endl;
+  std::exit(1);
+#endif
+
+#ifdef GAME_ROOT
+  struct stat info;
+  if (stat(GAME_ROOT, &info) || !(info.st_mode & S_IFDIR)) {
+    std::cerr << "GAME_ROOT \'" << GAME_ROOT << "\' not exit)" << std::endl;
+    std::exit(1);
+  }
+#endif
+
   return 0;
 }
 
@@ -53,6 +71,7 @@ int Engine::Draw() {
     std::cout << "\033[2K";
   }
   std::cout.flush();
+  n_line += scoreboard.DrawTitleLine(gameboard.getScore());
   n_line += gameboard.Draw();
   std::cout << "(w) up (a) left (s) down (d) right (q) quit" << std::endl;
   n_line += 1;

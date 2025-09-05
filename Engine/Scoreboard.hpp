@@ -13,6 +13,7 @@ class Scoreboard {
   Scoreboard() = default;
   int Read();
   int Draw();
+  int DrawTitleLine(int current_score);
   int AddNewScore(int score);
   int Save();
 };
