@@ -264,4 +264,8 @@ int Gameboard::Terminate() {
   return 0;
 }
 
+int Gameboard::getScore() {
+  return score;
+}
+
 } /*namespace Engine*/

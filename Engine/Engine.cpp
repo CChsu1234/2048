@@ -6,6 +6,7 @@ namespace Engine {
 
 int Engine::Init() {
   gameboard.Init();
+  scoreboard.Read();
   n_line = 0;
   return 0;
 }
@@ -20,11 +21,14 @@ int Engine::Start() {
       break;
     }
   }
+  score = gameboard.getScore();
+  scoreboard.AddNewScore(score);
   if (status == 1) {
     std::cout << "YOU LOSE" << std::endl;
   } else if (status == 2) {
     std::cout << "QUIT" << std::endl;
   }
+  scoreboard.Draw();
   return 0;
 }
 
@@ -58,6 +62,7 @@ int Engine::Draw() {
 
 int Engine::Terminate() {
   gameboard.Terminate();
+  scoreboard.Save();
   return 0;
 }
 

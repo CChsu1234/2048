@@ -11,4 +11,6 @@ add_executable(2048
   Engine/Engine.hpp
   Engine/Gameboard.cpp
   Engine/Gameboard.hpp
+  Engine/Scoreboard.cpp
+  Engine/Scoreboard.hpp
 )
