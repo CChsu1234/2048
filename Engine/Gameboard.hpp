@@ -37,6 +37,7 @@ class Gameboard {
   int Update(int keycode);
   int Draw();
   int Terminate();
+  int getScore();
 };
 
 } /*namespace Engine*/

@@ -256,12 +256,15 @@ int Gameboard::Draw() {
     std::cout << '#';
   }
   std::cout << std::endl;
-  std::cout << "score: " << score << std::endl;
-  return kHeight + 3;
+  return kHeight + 2;
 }
 
 int Gameboard::Terminate() {
   return 0;
+}
+
+int Gameboard::getScore() {
+  return score;
 }
 
 } /*namespace Engine*/
