@@ -17,7 +17,7 @@ make load build
 
 ## Install
 
-add this in your bashrc or zshrc file
+Add this in your shell rc file
 
 ```bash
 source /path/to/2048
@@ -25,4 +25,4 @@ source /path/to/2048
 
 ## Play
 
-type wasd and press enter to move
+Press WASD and press enter to move
