@@ -41,8 +41,10 @@ int Gameboard::Init() {
   number_to_color.insert({1024, "#EDC53F"});
   number_to_color.insert({2048, "#E9B501"});
   number_to_color.insert({4096, "#FCEDD8"});
-  Add();
-  Add();
+  unsigned int seed = (time(NULL));
+  Add(&seed);
+  seed *= time(NULL);
+  Add(&seed);
   return 0;
 }
 
@@ -175,8 +177,8 @@ int Gameboard::Move(int dir) {
   return 0;
 }
 
-int Gameboard::Add() {
-  srand( time(NULL) );
+int Gameboard::Add(unsigned int* seed) {
+  srand( (seed) ? *seed : time(NULL) );
   std::vector<std::pair<int, int>> free_space;
   for (int i = 0; i < kHeight; ++i) {
     for (int j = 0; j < kWidth; ++j) {
