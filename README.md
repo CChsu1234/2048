@@ -17,10 +17,10 @@ make load build
 
 ## Install
 
-Add this in your shell rc file
+Add this in your rc file
 
 ```bash
-source /path/to/2048
+source /path/to/2048/setEnv.sh
 ```
 
 ## Play
