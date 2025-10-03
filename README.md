@@ -25,4 +25,4 @@ source /path/to/2048
 
 ## Play
 
-Press WASD and press enter to move
+Press WASD to move. If you are a vim user, you can use hjkl to move too.

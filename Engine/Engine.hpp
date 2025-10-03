@@ -3,10 +3,14 @@
 
 #include <string>
 
+#include <termios.h>
+
 #include "Gameboard.hpp"
 #include "Scoreboard.hpp"
 
 namespace Engine {
+
+static struct termios original;
 
 class Engine {
  private:

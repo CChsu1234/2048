@@ -1,12 +1,44 @@
 #include "Engine.hpp"
 
 #include <iostream>
+
 #include <sys/stat.h>
+#include <stdlib.h>
+#include <pthread.h> // Multithreading
+#include <stdio.h>
+#include <stdlib.h>  // for atexit()
+#include <termios.h> // For changing terminal mode
+#include <unistd.h>  // For changing terminal mode
 
 #include "Gameboard.hpp"
 #include "Scoreboard.hpp"
 
 namespace Engine {
+
+void disableRAWMode() {
+  tcsetattr(STDIN_FILENO, TCSAFLUSH,
+            &original); // Set terminal to original state
+}
+
+/// This function enables RAW mode for terminal.
+void enableRAWMode() {
+  struct termios raw;
+  tcgetattr(STDIN_FILENO, &raw); // Save the state of the terminal to struct raw
+                                 // STDIN_FILENO is from <stdlib.h>
+                                 // tcgetattr() from <termios.h>
+  tcgetattr(STDIN_FILENO, &original);
+  atexit(&disableRAWMode); // Revert to canonical mode when exiting the program
+                           // atext() from <stdlib.h>
+  raw.c_lflag &=
+      ~(ECHO | ICANON); // Turn off canonical mode
+                        // Turn off ECHO mode so that keyboard is not
+                        // printing to terminal
+                        // ICANON and ECHO is bitflag. ~ is binary NOT operator
+
+  tcsetattr(STDIN_FILENO, TCSAFLUSH,
+            &raw); // Set the terminal to be in raw mode
+                   // tcsetattr() from <termios.h>
+}
 
 int Engine::Init() {
   gameboard.Init();
@@ -14,7 +46,7 @@ int Engine::Init() {
   n_line = 0;
 
 #ifndef GAME_ROOT
-  std::cerr << "GAME_ROOT not define" << std::endl;
+  fprintf(stderr, "GAME_ROOT not define\n");
   std::exit(1);
 #endif
 
@@ -25,6 +57,8 @@ int Engine::Init() {
     std::exit(1);
   }
 #endif
+
+  enableRAWMode();
 
   return 0;
 }
@@ -42,23 +76,22 @@ int Engine::Start() {
   score = gameboard.getScore();
   scoreboard.AddNewScore(score);
   if (status == 1) {
-    std::cout << "YOU LOSE" << std::endl;
+    printf("YOU LOSE\n");
   } else if (status == 2) {
-    std::cout << "QUIT" << std::endl;
+    printf("QUIT\n");
   }
   scoreboard.Draw();
   return 0;
 }
 
 int Engine::Update() {
-  std::string input;
-  std::getline(std::cin, input);
+  char input;
+  input = getchar();
   int result;
-  n_line += 1;
-  if (input[0] == 'q') {
+  if (input == 'q') {
     return 2;
   }
-  result = gameboard.Update(input[0]);
+  result = gameboard.Update(input);
   if (result != 0) {
     return result;
   }
@@ -67,13 +100,11 @@ int Engine::Update() {
 
 int Engine::Draw() {
   while (n_line--) {
-    std::cout << "\033[A";
-    std::cout << "\033[2K";
+    printf("\033[A\033[2K");
   }
-  std::cout.flush();
   n_line += scoreboard.DrawTitleLine(gameboard.getScore());
   n_line += gameboard.Draw();
-  std::cout << "(w) up (a) left (s) down (d) right (q) quit" << std::endl;
+  printf("(w) up (a) left (s) down (d) right (q) quit\n");
   n_line += 1;
   n_line += 1;
   return 0;
