@@ -25,6 +25,10 @@ int Gameboard::Init() {
       board[x][y] = 0;
     }
   }
+  key_to_dir.insert({'k', kUp});
+  key_to_dir.insert({'j', kDown});
+  key_to_dir.insert({'h', kLeft});
+  key_to_dir.insert({'l', kRight});
   key_to_dir.insert({'w', kUp});
   key_to_dir.insert({'s', kDown});
   key_to_dir.insert({'a', kLeft});
@@ -229,7 +233,7 @@ void Gameboard::DrawColorText(int n) {
   auto target = number_to_color.find(n);
   int length = std::to_string(n).length();
   for (int i = 4; i > length; --i) {
-    std::cout << ' ';
+    printf(" ");
   }
   if (n == 0) {
     std::cout << '.';
@@ -243,21 +247,21 @@ void Gameboard::DrawColorText(int n) {
 
 int Gameboard::Draw() {
   for (int i = 0; i < 2 + 5 * kWidth; ++i) {
-    std::cout << '#';
+    printf("#");
   }
-  std::cout << std::endl;
+  printf("\n");
   for (int x = 0; x < kHeight; ++x) {
-    std::cout << '#';
+    printf("#");
     for (int y = 0; y < kWidth; ++y) {
       DrawColorText(board[x][y]);
-      std::cout << ' ';
+      printf(" ");
     }
-    std::cout << "#\n";
+    printf("#\n");
   }
   for (int i = 0; i < 2 + 5 * kWidth; ++i) {
-    std::cout << '#';
+    printf("#");
   }
-  std::cout << std::endl;
+  printf("\n");
   return kHeight + 2;
 }
 
